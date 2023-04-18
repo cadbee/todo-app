@@ -17,6 +17,11 @@ type Message {
   text: String!
 }
 
+type ToDo {
+  id: ID!
+  name: String!
+}
+
 "Input from user to create a message"
 input MessageInput {
   "Message content"
@@ -38,7 +43,7 @@ type Query {
   "List of messages sent by users"
   messages: [Message]
   uploads: [File]
-
+  todos: [ToDo]
 }
 
 type Mutation {

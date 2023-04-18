@@ -11,4 +11,8 @@ export const db = new Lowdb(new FileSync(resolve(__dirname, '../../live/db.json'
 db.defaults({
   messages: [],
   uploads: [],
+  todos: [{
+    id: 1,
+    name: "Hello Task"
+  }],
 }).write()
