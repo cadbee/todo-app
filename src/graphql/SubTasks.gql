@@ -1,0 +1,7 @@
+#import "./SubTaskFragment.gql"
+
+query subTasks($taskID: ID!){
+    subTasks(taskID: $taskID){
+        ...SubTask
+    }
+}

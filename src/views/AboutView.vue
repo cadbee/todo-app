@@ -1,18 +1,24 @@
 <template>
     <div class="about">
-        <h1>This is an about page</h1>
-        <ApolloExample/>
+        <TaskList/>
     </div>
 </template>
 
 <script>
-import ApolloExample from "@/components/ApolloExample.vue";
+import TaskList from "@/components/TaskList.vue";
 
 export default {
     name: 'AboutView',
-    components: {ApolloExample},
-    comments: {
-        ApolloExample
-    }
+    components: {TaskList},
 }
 </script>
+
+<style scoped>
+.about{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>

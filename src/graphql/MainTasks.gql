@@ -1,0 +1,7 @@
+#import "./MainTaskFragment.gql"
+
+query mainTasks {
+    mainTasks {
+        ...MainTask
+    }
+}

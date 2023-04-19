@@ -7,7 +7,7 @@ export default {
 
     Query: {
         mainTasks: (root, args, {db}) => db.get('tasks').value(),
-        subTasks: (root, args, {db}) => db.get('sub_tasks').value(),
+        subTasks: (root, args, {db}) => db.get('sub_tasks').filter({taskID: args.taskID}).value(),
     },
 
     MainTask: {
