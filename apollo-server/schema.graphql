@@ -2,64 +2,57 @@
 scalar JSON
 scalar Upload
 
-"It will increment!"
-type Counter {
-  "Number of increments"
-  count: Int!
-  "Full message for testing"
-  countStr: String
+type SubTask {
+  id: ID!
+  text: String!
+  completed: Boolean!
+  taskID: ID!
 }
 
-"A text message send by users"
-type Message {
+type MainTask {
   id: ID!
-  "Message content"
+  name: String!
+  subTasks: [SubTask]
+}
+
+input MainTaskInput {
+  name: String!
+}
+
+input SubTaskInput {
+  taskID: ID!
   text: String!
 }
 
-type ToDo {
+input UpdateMainTaskInput{
   id: ID!
   name: String!
 }
 
-"Input from user to create a message"
-input MessageInput {
-  "Message content"
-  text: String!
-}
-
-type File {
+input UpdateSubTaskInput{
   id: ID!
-  path: String!
-  filename: String!
-  mimetype: String!
-  encoding: String!
+  text: String!
+  completed: Boolean!
 }
 
 
 type Query {
-  "Test query with a parameter"
-  hello(name: String): String!
-  "List of messages sent by users"
-  messages: [Message]
-  uploads: [File]
-  todos: [ToDo]
+  mainTasks: [MainTask]
+  subTasks(taskID: ID!): [SubTask]
 }
 
 type Mutation {
-  myMutation: String!
-  "Add a message and publish it on 'messages' subscription channel"
-  addMessage (input: MessageInput!): Message!
-  singleUpload (file: Upload!): File!
-  multipleUpload (files: [Upload!]!): [File!]!
-
+  addMainTask (input: MainTaskInput!): MainTask!
+  addSubTask (input: SubTaskInput!): SubTask!
+  deleteMainTask(id: ID!): MainTask!
+  deleteSubTask(id: ID!): SubTask!
+  updateMainTask(input: UpdateMainTaskInput!): MainTask!
+  updateSubTask(input: UpdateSubTaskInput!): SubTask!
 }
 
 type Subscription {
   mySub: String!
-  "This will update every 2 seconds"
-  counter: Counter!
   "When a new message is added"
-  messageAdded: Message!
-
+  subTaskAdded: SubTask!
+  mainTaskAdded: MainTask!
 }

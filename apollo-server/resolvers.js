@@ -3,70 +3,67 @@ import shortid from 'shortid'
 
 
 export default {
-  JSON: GraphQLJSON,
+    JSON: GraphQLJSON,
 
-  Counter: {
-    countStr: counter => `Current count: ${counter.count}`,
-  },
-
-
-  Query: {
-    hello: (root, { name }) => `Hello ${name || 'World'}!`,
-    messages: (root, args, { db }) => db.get('messages').value(),
-    uploads: (root, args, { db }) => db.get('uploads').value(),
-    todos: (root, args, {db}) => db.get('todos').value(),
-  },
-
-  Mutation: {
-    myMutation: (root, args, context) => {
-      const message = 'My mutation completed!'
-      context.pubsub.publish('hey', { mySub: message })
-      return message
-    },
-    addMessage: (root, { input }, { pubsub, db }) => {
-      const message = {
-        id: shortid.generate(),
-        text: input.text,
-      }
-
-      db
-        .get('messages')
-        .push(message)
-        .last()
-        .write()
-
-      pubsub.publish('messages', { messageAdded: message })
-
-      return message
+    Query: {
+        mainTasks: (root, args, {db}) => db.get('tasks').value(),
+        subTasks: (root, args, {db}) => db.get('sub_tasks').value(),
     },
 
-    singleUpload: (root, { file }, { processUpload }) => processUpload(file),
-    multipleUpload: (root, { files }, { processUpload }) => Promise.all(files.map(processUpload)),
-
-  },
-
-  Subscription: {
-    mySub: {
-      subscribe: (parent, args, { pubsub }) => pubsub.asyncIterator('hey'),
+    MainTask: {
+        subTasks: (root, args, {db}) => {
+            return db.get('sub_tasks').filter((subTask) => subTask.taskID === root.id).value();
+        }
     },
-    counter: {
-      subscribe: (parent, args, { pubsub }) => {
-        const channel = Math.random().toString(36).substring(2, 15) // random channel name
-        let count = 0
-        setInterval(() => pubsub.publish(
-          channel,
-          {
-            // eslint-disable-next-line no-plusplus
-            counter: { count: count++ },
-          }
-        ), 2000)
-        return pubsub.asyncIterator(channel)
-      },
+    Mutation: {
+        addSubTask: (root, {input}, {pubsub, db}) => {
+            const subTask = {
+                id: shortid.generate(),
+                text: input.text,
+                taskID: input.taskID,
+            };
+            db.get('sub_tasks').push(subTask).last().write();
+            pubsub.publish('sub_tasks', {subTaskAdded: subTask});
+            return subTask;
+        },
+        addMainTask: (root, {input}, {pubsub, db}) => {
+            const mainTask = {
+                id: shortid.generate(),
+                name: input.name,
+            };
+            db.get('tasks').push(mainTask).last().write();
+            pubsub.publish('tasks', {mainTaskAdded: mainTask});
+            return mainTask;
+        },
+        deleteMainTask: (root, {id}, {db}) => {
+            const task = db.get('tasks').find({id: id}).value();
+            db.get('tasks').remove(task).write();
+            db.get('sub_tasks').remove({taskID: task.id}).write();
+            return task;
+        },
+        deleteSubTask: (root, {id}, {db}) => {
+            const subTask = db.get('sub_tasks').find({id: id}).value();
+            db.get('sub_tasks').remove(subTask).write();
+            return subTask;
+        },
+        updateMainTask: (root, {input}, {db}) => {
+            const task = db.get('tasks').find({id: input.id}).assign({name: input.name}).value();
+            db.write();
+            return task;
+        },
+        updateSubTask: (root, {input}, {db}) => {
+            const subTask = db.get('sub_tasks').find({id: input.id}).assign({text: input.text, completed: input.completed}).value();
+            db.write();
+            return subTask;
+        },
     },
 
-    messageAdded: {
-      subscribe: (parent, args, { pubsub }) => pubsub.asyncIterator('messages'),
+    Subscription: {
+        subTaskAdded: {
+            subscribe: (parent, args, {pubsub}) => pubsub.asyncIterator('sub_tasks'),
+        },
+        mainTaskAdded: {
+            subscribe: (parent, args, {pubsub}) => pubsub.asyncIterator('tasks'),
+        }
     },
-
-  },
 }
