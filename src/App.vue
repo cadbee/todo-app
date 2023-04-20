@@ -27,8 +27,8 @@
 
             <v-spacer></v-spacer>
             <v-tabs>
-                <v-tab><router-link to="/home"></router-link>Home</v-tab>
-                <v-tab><router-link to="/about"></router-link>About</v-tab>
+                <v-tab to="/">Home</v-tab>
+                <v-tab to="/about">About</v-tab>
             </v-tabs>
             <v-btn
                     href="https://github.com/vuetifyjs/vuetify/releases/latest"

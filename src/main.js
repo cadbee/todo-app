@@ -5,7 +5,7 @@ import store from './store'
 import { createProvider } from './vue-apollo'
 
 import 'regenerator-runtime/runtime';
-import vuetify from './plugins/vuetify'
+import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
 
