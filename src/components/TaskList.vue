@@ -1,71 +1,170 @@
 <template>
-    <div class="task-list">
-        <ApolloQuery :query="require('../graphql/MainTasks.gql')">
-            <template v-slot="{ result: { loading, error, data } }">
-                <!-- Loading -->
-                <div v-if="loading" class="loading apollo">Loading...</div>
+    <ApolloQuery :query="require('../graphql/MainTasks.gql')">
+        <template v-slot="{ result: { loading, error, data } }">
+            <!-- Loading -->
+            <div v-if="loading" class="loading apollo">Loading...</div>
 
-                <!-- Error -->
-                <div v-else-if="error" class="error apollo">An error occurred</div>
-                <v-card v-else-if="data"
-                        class="mx-auto"
-                        width="600"
-                >
-                    <v-row justify="center">
+            <!-- Error -->
+            <div v-else-if="error" class="error apollo">An error occurred</div>
+            <v-card v-else-if="data"
+                    class="mx-auto"
+            >
+                <v-card-actions>
+                    <v-row>
                         <v-expansion-panels>
                             <v-expansion-panel
-                                v-for="task in data.mainTasks"
+                                v-for="(task, index) in data.mainTasks"
                                 :key="task.id"
                             >
-                                <v-expansion-panel-header>{{ task.name }}</v-expansion-panel-header>
+                                <v-expansion-panel-header disable-icon-rotate>
+                                    {{index+1}}. {{ task.name }}
+                                    <template v-slot:actions >
+                                        <v-speed-dial
+                                            direction="left"
+                                            :open-on-hover="true"
+                                            transition="slide-x-transition"
+                                        >
+                                            <template v-slot:activator>
+                                                <v-btn
+                                                  :value="false"
+                                                    @click.native.stop=""
+                                                    color="blue darken-2"
+                                                    dark
+                                                    fab
+                                                    icon
+                                                    small
+                                                >
+                                                    <v-icon>
+                                                        mdi-dots-horizontal
+                                                    </v-icon>
+                                                </v-btn>
+                                            </template>
+
+                                            <v-btn
+                                                fab
+                                                dark
+                                                small
+                                                color="green"
+                                                @click.native.stop="openUpdateDialog(task)"
+                                            >
+                                                <v-icon>mdi-pencil</v-icon>
+                                            </v-btn>
+                                            <ApolloMutation :mutation="require('../graphql/DeleteMainTask.gql')"
+                                                            :variables="{id: task.id}"
+                                                            :update="onTaskDelete">
+                                                <template v-slot="{mutate}">
+                                                    <v-btn
+                                                      fab
+                                                      dark
+                                                      small
+                                                      color="red"
+                                                      @click.native.stop="onSubmit(mutate)"
+                                                    >
+                                                        <v-icon>mdi-delete</v-icon>
+                                                    </v-btn>
+                                                </template>
+                                            </ApolloMutation>
+                                        </v-speed-dial>
+                                    </template>
+                                </v-expansion-panel-header>
                                 <v-expansion-panel-content>
-                                    <SubTask :task-id="task.id"></SubTask>
+                                    <SubTaskList :task-id="task.id" :filter-value="filter"></SubTaskList>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                         </v-expansion-panels>
                     </v-row>
-                </v-card>
+                </v-card-actions>
 
-                <!-- Result -->
-<!--                    <v-card v-else-if="data"-->
-<!--                            class="mx-auto"-->
-<!--                            width="600"-->
-<!--                    >-->
-<!--                        <v-list>-->
-<!--                            <v-list-group-->
-<!--                                    prepend-icon="mdi-account-circle"-->
-<!--                                    v-for="task in data.mainTasks"-->
-<!--                                    :key="task.id"-->
-<!--                            >-->
-<!--                                <template v-slot:activator>-->
-<!--                                    <v-list-item-action>-->
-<!--                                        <v-checkbox :input-value="selectedItems"></v-checkbox>-->
-<!--                                    </v-list-item-action>-->
-<!--                                    <v-list-item-title>{{ task.name }}</v-list-item-title>-->
-<!--                                </template>-->
-
-<!--                                <SubTask :task-id="task.id"></SubTask>-->
-<!--                            </v-list-group>-->
-<!--                        </v-list>-->
-<!--                    </v-card>-->
-<!--                 No result -->
-                <div v-else class="no-result apollo">No result :(</div>
-            </template>
-        </ApolloQuery>
-    </div>
+            </v-card>
+            <v-sheet
+              v-else
+              :color="'grey'"
+              class="pa-3 mx-auto"
+            >
+                <v-skeleton-loader
+                  class="mx-auto"
+                  type="card"
+                ></v-skeleton-loader>
+            </v-sheet>
+<!--                <div v-else class="no-result apollo">No result :(</div>-->
+        </template>
+        <ConfirmAlert ref="confirmMainTaskAddDialogue"
+        >
+        </ConfirmAlert>
+        <UpdateTaskDialog ref="updateDialogue"></UpdateTaskDialog>
+        <v-alert
+          v-model="alert"
+          type="success"
+          dismissible
+          transition="scale-transition"
+        >
+            <v-row>
+                <v-col class="grow text-center">
+                    {{ alertMessage }}
+                </v-col>
+                <v-col class="shrink">
+                    <v-btn small icon><v-icon>fa-rotate-left</v-icon></v-btn>
+                </v-col>
+            </v-row>
+        </v-alert>
+    </ApolloQuery>
 </template>
 
 <script>
-import SubTask from "@/components/SubTask.vue";
+import SubTaskList from "@/components/SubTaskList.vue";
+import ConfirmAlert from "@/components/ConfirmAlert.vue";
+import UpdateTaskDialog from "@/components/UpdateTaskDialog.vue";
 
 export default {
     name: "TaskList",
+    props: ['filter'],
     data() {
         return {
+            alert: false,
+            alertMessage: '',
+            editDialog: true,
             selectedItems: [],
         }
     },
-    components: {SubTask}
+    watch: {
+        alert(new_val){
+            if(new_val){
+                setTimeout(()=>{this.alert=false},3000)
+            }
+        }
+    },
+    methods:{
+        async onSubmit(mutate){
+            this.alert = false;
+            const ok = await this.$refs.confirmMainTaskAddDialogue.show({
+                message: "Are you sure?"
+            });
+            if(ok){
+                mutate();
+                this.alert = true;
+                this.alertMessage = 'Task deleted successfully!';
+            }
+        },
+        onTaskDelete(store, {data: {deleteMainTask}}){
+            const query = {
+                query: require("../graphql/MainTasks.gql"),
+            }
+            let data = store.readQuery(query);
+            data.mainTasks = data.mainTasks.filter((mainTask) => mainTask.id !== deleteMainTask.id);
+            store.writeQuery({
+                ...query,
+                data,
+            });
+            this.newTask = '';
+        },
+        openUpdateDialog(task){
+            this.$refs.updateDialogue.openDialog({
+                taskId: task.id,
+                initialValue: task.name,
+            })
+        }
+    },
+    components: {UpdateTaskDialog, ConfirmAlert, SubTaskList}
 }
 </script>
 

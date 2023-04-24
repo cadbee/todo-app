@@ -21,6 +21,7 @@ export default {
                 id: shortid.generate(),
                 text: input.text,
                 taskID: input.taskID,
+                completed: false
             };
             db.get('sub_tasks').push(subTask).last().write();
             pubsub.publish('sub_tasks', {subTaskAdded: subTask});

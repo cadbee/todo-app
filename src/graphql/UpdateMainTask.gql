@@ -1,0 +1,7 @@
+#import './MainTaskFragment.gql'
+
+mutation updateMainTask($input: UpdateMainTaskInput!){
+    updateMainTask(input: $input){
+        ...MainTask
+    }
+}

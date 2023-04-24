@@ -2,6 +2,7 @@
 
 mutation updateSubTask($input: UpdateSubTaskInput!){
     updateSubTask(input: $input){
+        taskID
         ...SubTask
     }
 }
