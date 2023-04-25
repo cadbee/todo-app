@@ -24,7 +24,7 @@ export default {
                 completed: false
             };
             db.get('sub_tasks').push(subTask).last().write();
-            pubsub.publish('sub_tasks', {subTaskAdded: subTask});
+            pubsub.publish('SUB_TASK_ADDED', {subTaskAdded: subTask});
             return subTask;
         },
         addMainTask: (root, {input}, {pubsub, db}) => {
@@ -33,18 +33,20 @@ export default {
                 name: input.name,
             };
             db.get('tasks').push(mainTask).last().write();
-            pubsub.publish('tasks', {mainTaskAdded: mainTask});
+            pubsub.publish('MAIN_TASK_ADDED', {mainTaskAdded: mainTask});
             return mainTask;
         },
-        deleteMainTask: (root, {id}, {db}) => {
+        deleteMainTask: (root, {id}, {pubsub, db}) => {
             const task = db.get('tasks').find({id: id}).value();
             db.get('tasks').remove(task).write();
             db.get('sub_tasks').remove({taskID: task.id}).write();
+            pubsub.publish('MAIN_TASK_DELETED', {mainTaskDeleted: task});
             return task;
         },
-        deleteSubTask: (root, {id}, {db}) => {
+        deleteSubTask: (root, {id}, {pubsub, db}) => {
             const subTask = db.get('sub_tasks').find({id: id}).value();
             db.get('sub_tasks').remove(subTask).write();
+            pubsub.publish('SUB_TASK_DELETED', {subTaskDeleted: subTask});
             return subTask;
         },
         updateMainTask: (root, {input}, {db}) => {
@@ -61,10 +63,16 @@ export default {
 
     Subscription: {
         subTaskAdded: {
-            subscribe: (parent, args, {pubsub}) => pubsub.asyncIterator('sub_tasks'),
+            subscribe: (parent, args, {pubsub}) => pubsub.asyncIterator('SUB_TASK_ADDED'),
         },
         mainTaskAdded: {
-            subscribe: (parent, args, {pubsub}) => pubsub.asyncIterator('tasks'),
+            subscribe: (parent, args, {pubsub}) => pubsub.asyncIterator('MAIN_TASK_ADDED'),
+        },
+        subTaskDeleted: {
+            subscribe: (parent, args, {pubsub}) => pubsub.asyncIterator('SUB_TASK_DELETED'),
+        },
+        mainTaskDeleted: {
+            subscribe: (parent, args, {pubsub}) => pubsub.asyncIterator('MAIN_TASK_DELETED'),
         }
     },
 }

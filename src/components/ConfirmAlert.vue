@@ -47,15 +47,8 @@ export default {
     },
     methods: {
         show(opts = {}) {
-            // this.title = opts.title
             this.message = opts.message
-            // this.okButton = opts.okButton
-            // if (opts.cancelButton) {
-            //     this.cancelButton = opts.cancelButton
-            // }
-            // Once we set our config, we tell the popup modal to open
             this.opened = true;
-            // Return promise so the caller can get results
             return new Promise((resolve, reject) => {
                 this.resolvePromise = resolve
                 this.rejectPromise = reject
@@ -69,8 +62,6 @@ export default {
         cancel() {
             this.opened = false;
             this.resolvePromise(false)
-            // Or you can throw an error
-            // this.rejectPromise(new Error('User canceled the dialogue'))
         },
     }
 }

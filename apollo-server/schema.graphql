@@ -55,4 +55,6 @@ type Subscription {
   "When a new message is added"
   subTaskAdded: SubTask!
   mainTaskAdded: MainTask!
+  subTaskDeleted: SubTask!
+  mainTaskDeleted: MainTask!
 }

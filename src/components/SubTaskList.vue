@@ -2,6 +2,10 @@
     <ApolloQuery :query="require('../graphql/SubTasks.gql')"
                  :variables="{taskID: taskId}"
     >
+        <ApolloSubscribeToMore :document="require('../graphql/SubTaskAdded.gql')"
+                               :update-query="onSubTaskAdded"/>
+        <ApolloSubscribeToMore :document="require('../graphql/SubTaskDeleted.gql')"
+                               :update-query="onSubTaskDeletedTest"/>
         <template v-slot="{ result: { loading, error, data } }">
             <!--Loading-->
             <div v-if="loading" class="loading apollo">Loading...</div>
@@ -55,7 +59,7 @@
                                         </v-tooltip>
                                 <ApolloMutation :mutation="require('../graphql/DeleteSubTask.gql')"
                                                 :variables="{ id: task.id }"
-                                                :update="onSubTaskDeleted"
+
                                 >
                                     <template v-slot="{ mutate, isLoading }">
                                         <v-tooltip top>
@@ -89,7 +93,7 @@
                                 <template v-slot:append>
                                     <ApolloMutation :mutation="require('../graphql/AddSubTask.gql')"
                                                     :variables="{ input: {taskID: taskId, text: newSubTask} }"
-                                                    :update="onSubTaskAdded"
+                                                    @done="newSubTask = ''"
                                     >
                                         <template v-slot="{ mutate }">
                                                 <v-icon @click="mutate()" :disabled="!inputValid" :color="disabledColor">mdi-plus</v-icon>
@@ -135,21 +139,6 @@ export default {
                 mutate();
             }
         },
-        onSubTaskAdded(store, {data: {addSubTask}}) {
-            const query = {
-                query: require("../graphql/SubTasks.gql"),
-                variables: {
-                    taskID: this.taskId
-                },
-            };
-            let data = store.readQuery(query);
-            data.subTasks.push(addSubTask);
-            store.writeQuery({
-                ...query,
-                data,
-            });
-            this.newSubTask = '';
-        },
         onSubTaskDeleted(store, {data: {deleteSubTask}}) {
             const query = {
                 query: require("../graphql/SubTasks.gql"),
@@ -179,6 +168,17 @@ export default {
                 subTaskId: task.id,
                 completed: task.completed
             })
+        },
+        onSubTaskAdded(previousResult, {subscriptionData}){
+            return {
+                subTasks: [...previousResult.subTasks, subscriptionData.data.subTaskAdded],
+            }
+        },
+        onSubTaskDeletedTest(previousResult, {subscriptionData}){
+            previousResult.subTasks = previousResult.subTasks.filter((subTask) => subTask.id !== subscriptionData.data.subTaskDeleted.id);
+            return {
+                subTasks: [...previousResult.subTasks],
+            }
         }
     },
     computed: {

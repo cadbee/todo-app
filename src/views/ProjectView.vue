@@ -24,7 +24,7 @@
                         :value="filter"
                         :key="index"
                 >
-                    <v-btn class="me-2" small
+                    <v-btn class="me-2 mb-1" small
                            rounded
                            :color="active ? 'primary' : ''"
                            @click="toggle"
@@ -34,10 +34,9 @@
                 </v-item>
             </v-item-group>
         </v-row>
-        <v-container fluid>
+        <v-container class="pa-1" fluid>
             <TaskList :filter="filter"></TaskList>
         </v-container>
-
     </v-container>
 </template>
 

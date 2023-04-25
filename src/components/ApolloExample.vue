@@ -32,49 +32,45 @@
 <!--        </ApolloQuery>-->
 
 <!--        &lt;!&ndash; Tchat example &ndash;&gt;-->
-<!--        <ApolloQuery-->
-<!--                :query="require('../graphql/Messages.gql')"-->
-<!--        >-->
-<!--            <ApolloSubscribeToMore-->
-<!--                    :document="require('../graphql/MessageAdded.gql')"-->
-<!--                    :update-query="onMessageAdded"-->
-<!--            />-->
+        <ApolloQuery
+                :query="require('../graphql/Messages.gql')"
+        >
+            <ApolloSubscribeToMore
+                    :document="require('../graphql/MessageAdded.gql')"
+                    :update-query="onMessageAdded"
+            />
 
-<!--            <div slot-scope="{ result: { data } }">-->
-<!--                <template v-if="data">-->
-<!--                    <div-->
-<!--                            v-for="message of data.messages"-->
-<!--                            :key="message.id"-->
-<!--                            class="message"-->
-<!--                    >-->
-<!--                        {{ message.text }}-->
-<!--                    </div>-->
-<!--                </template>-->
-<!--            </div>-->
-<!--        </ApolloQuery>-->
+            <div slot-scope="{ result: { data } }">
+                <template v-if="data">
+                    <div
+                            v-for="message of data.messages"
+                            :key="message.id"
+                            class="message"
+                    >
+                        {{ message.text }}
+                    </div>
+                </template>
+            </div>
+        </ApolloQuery>
 
-<!--        <ApolloMutation-->
-<!--                :mutation="require('../graphql/AddMessage.gql')"-->
-<!--                :variables="{-->
-<!--        input: {-->
-<!--          text: newMessage,-->
-<!--        },-->
-<!--      }"-->
-<!--                class="form"-->
-<!--                @done="newMessage = ''"-->
-<!--        >-->
-<!--            <template slot-scope="{ mutate }">-->
-<!--                <form v-on:submit.prevent="formValid && mutate()">-->
-<!--                    <label for="field-message">Message</label>-->
-<!--                    <input-->
-<!--                            id="field-message"-->
-<!--                            v-model="newMessage"-->
-<!--                            placeholder="Type a message"-->
-<!--                            class="input"-->
-<!--                    >-->
-<!--                </form>-->
-<!--            </template>-->
-<!--        </ApolloMutation>-->
+        <ApolloMutation
+                :mutation="require('../graphql/AddMessage.gql')"
+                :variables="{ input: { text: newMessage, },}"
+                class="form"
+                @done="newMessage = ''"
+        >
+            <template slot-scope="{ mutate }">
+                <form v-on:submit.prevent="formValid && mutate()">
+                    <label for="field-message">Message</label>
+                    <input
+                            id="field-message"
+                            v-model="newMessage"
+                            placeholder="Type a message"
+                            class="input"
+                    >
+                </form>
+            </template>
+        </ApolloMutation>
     </div>
 </template>
 

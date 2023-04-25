@@ -1,5 +1,9 @@
 <template>
     <ApolloQuery :query="require('../graphql/MainTasks.gql')">
+        <ApolloSubscribeToMore :document="require('../graphql/MainTaskAdded.gql')"
+                               :update-query="onMainTaskAdded"/>
+        <ApolloSubscribeToMore :document="require('../graphql/MainTaskDeleted.gql')"
+                               :update-query="onMainTaskDeleted"/>
         <template v-slot="{ result: { loading, error, data } }">
             <!-- Loading -->
             <div v-if="loading" class="loading apollo">Loading...</div>
@@ -51,7 +55,7 @@
                                             </v-btn>
                                             <ApolloMutation :mutation="require('../graphql/DeleteMainTask.gql')"
                                                             :variables="{id: task.id}"
-                                                            :update="onTaskDelete">
+                                                            >
                                                 <template v-slot="{mutate}">
                                                     <v-btn
                                                       fab
@@ -92,21 +96,18 @@
         >
         </ConfirmAlert>
         <UpdateTaskDialog ref="updateDialogue"></UpdateTaskDialog>
-        <v-alert
-          v-model="alert"
-          type="success"
-          dismissible
-          transition="scale-transition"
-        >
-            <v-row>
-                <v-col class="grow text-center">
-                    {{ alertMessage }}
-                </v-col>
-                <v-col class="shrink">
-                    <v-btn small icon><v-icon>fa-rotate-left</v-icon></v-btn>
-                </v-col>
-            </v-row>
-        </v-alert>
+        <v-snackbar color="green" v-model="alert" :timeout="100000" min-width="100px" top right>
+            <v-icon class="mr-2">mdi-check</v-icon>
+            {{ alertMessage }}
+            <template v-slot:action>
+                <v-btn icon>
+                    <v-icon>mdi-arrow-u-left-top</v-icon>
+                </v-btn>
+                <v-btn icon @click="alert = false">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </template>
+        </v-snackbar>
     </ApolloQuery>
 </template>
 
@@ -124,12 +125,14 @@ export default {
             alertMessage: '',
             editDialog: true,
             selectedItems: [],
+            prevQuery: null,
+            prevData: null
         }
     },
     watch: {
         alert(new_val){
             if(new_val){
-                setTimeout(()=>{this.alert=false},3000)
+                setTimeout(()=>{this.alert=false},10000)
             }
         }
     },
@@ -150,6 +153,8 @@ export default {
                 query: require("../graphql/MainTasks.gql"),
             }
             let data = store.readQuery(query);
+            this.prevData = data;
+            this.prevQuery = query;
             data.mainTasks = data.mainTasks.filter((mainTask) => mainTask.id !== deleteMainTask.id);
             store.writeQuery({
                 ...query,
@@ -162,6 +167,20 @@ export default {
                 taskId: task.id,
                 initialValue: task.name,
             })
+        },
+        onMainTaskAdded(previousResult, {subscriptionData}){
+            return {
+                mainTasks: [...previousResult.mainTasks, subscriptionData.data.mainTaskAdded],
+            }
+        },
+        onMainTaskDeleted(previousResult, {subscriptionData}){
+            previousResult.mainTasks = previousResult.mainTasks.filter((mainTask) => mainTask.id !== subscriptionData.data.mainTaskDeleted.id);
+            return {
+                mainTasks: [...previousResult.mainTasks],
+            }
+        },
+        undo(){
+
         }
     },
     components: {UpdateTaskDialog, ConfirmAlert, SubTaskList}

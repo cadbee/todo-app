@@ -5,19 +5,12 @@
             <v-app-bar-title>TODO App</v-app-bar-title>
         </v-app-bar>
         <AppDrawer :is-toggled.sync="drawerToggled"></AppDrawer>
-        <!-- Sizes your content based upon application components -->
-        <v-main>
-            <!-- Provides the application the proper gutter -->
-            <v-container fluid>
 
-                <!-- If using vue-router -->
+        <v-main>
+            <v-container >
                 <router-view></router-view>
             </v-container>
         </v-main>
-
-<!--        <v-footer app>-->
-<!--            &lt;!&ndash; &ndash;&gt;-->
-<!--        </v-footer>-->
     </v-app>
 </template>
 
@@ -40,6 +33,10 @@ export default {
 </script>
 
 <style>
+/*Disable Scroll Bar in full-page desktop app*/
+html {
+    overflow-y: auto;
+}
 .v-alert {
     position: fixed !important;
     right: 10px;

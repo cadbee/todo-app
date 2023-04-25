@@ -30,7 +30,8 @@
                 </v-btn>
                 <ApolloMutation :mutation="require('../graphql/AddTask.gql')"
                                 :variables="{input: {name: newTask}}"
-                                :update="onTaskAdded">
+                                @done="newTask = ''"
+                >
                     <template v-slot="{ mutate }">
                         <v-btn class="text-capitalize"
                           color="green darken-1"
@@ -48,14 +49,18 @@
         >
         </ConfirmAlert>
     </v-dialog>
-        <v-alert
-          v-model="alert"
-          type="success"
-          dismissible
-          transition="scale-transition"
-        >
-            Task added successfully!
-        </v-alert>
+    <v-snackbar color="green" v-model="alert" :timeout="100000" min-width="100px" top right>
+        <v-icon class="mr-2">mdi-check</v-icon>
+        Task added successfully!
+        <template v-slot:action>
+            <v-btn icon>
+                <v-icon>mdi-arrow-u-left-top</v-icon>
+            </v-btn>
+            <v-btn icon @click="alert = false">
+                <v-icon>mdi-close</v-icon>
+            </v-btn>
+        </template>
+    </v-snackbar>
     </v-layout>
 </template>
 
@@ -76,13 +81,6 @@ export default {
             ],
         }
     },
-    watch: {
-        alert(new_val){
-            if(new_val){
-                setTimeout(()=>{this.alert=false},3000)
-            }
-        }
-    },
     methods: {
         async onSubmit(mutate){
             const ok = await this.$refs.confirmDialogue.show({
@@ -93,18 +91,6 @@ export default {
                 this.alert = true;
                 this.$emit('update:opened', false);
             }
-        },
-        onTaskAdded(store, {data: {addMainTask}}){
-            const query = {
-                query: require("../graphql/MainTasks.gql"),
-            }
-            let data = store.readQuery(query);
-            data.mainTasks.push(addMainTask);
-            store.writeQuery({
-                ...query,
-                data,
-            });
-            this.newTask = '';
         },
         closeDialog(){
             this.$emit('update:opened', false);
