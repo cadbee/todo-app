@@ -49,23 +49,12 @@
         >
         </ConfirmAlert>
     </v-dialog>
-    <v-snackbar color="green" v-model="alert" :timeout="100000" min-width="100px" top right>
-        <v-icon class="mr-2">mdi-check</v-icon>
-        Task added successfully!
-        <template v-slot:action>
-            <v-btn icon>
-                <v-icon>mdi-arrow-u-left-top</v-icon>
-            </v-btn>
-            <v-btn icon @click="alert = false">
-                <v-icon>mdi-close</v-icon>
-            </v-btn>
-        </template>
-    </v-snackbar>
     </v-layout>
 </template>
 
 <script>
 import ConfirmAlert from "@/components/ConfirmAlert.vue";
+import { mapActions } from "vuex";
 
 export default {
     name: "AddTaskDialog",
@@ -82,13 +71,18 @@ export default {
         }
     },
     methods: {
+        ...mapActions('alert', {
+            hideAlert: "hideAlert",
+            showAlert: "showAlert"
+        }),
         async onSubmit(mutate){
+            await this.hideAlert();
             const ok = await this.$refs.confirmDialogue.show({
                 message: "Confirm Adding?"
             });
             if(ok){
                 mutate();
-                this.alert = true;
+                await this.showAlert({message: 'Task added successfully!'});
                 this.$emit('update:opened', false);
             }
         },

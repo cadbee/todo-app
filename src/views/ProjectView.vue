@@ -37,16 +37,18 @@
         <v-container class="pa-1" fluid>
             <TaskList :filter="filter"></TaskList>
         </v-container>
+        <SuccessAlert></SuccessAlert>
     </v-container>
 </template>
 
 <script>
 import TaskList from "@/components/TaskList.vue";
 import AddTaskDialog from "@/components/AddTaskDialog.vue";
+import SuccessAlert from "@/components/SuccessAlert.vue";
 
 export default {
     name: "ProjectView",
-    components: {AddTaskDialog, TaskList},
+    components: {SuccessAlert, AddTaskDialog, TaskList},
     data(){
         return {
             filters: ['All', 'Complete', 'Incomplete'],

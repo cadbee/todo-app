@@ -5,7 +5,7 @@
         <ApolloSubscribeToMore :document="require('../graphql/SubTaskAdded.gql')"
                                :update-query="onSubTaskAdded"/>
         <ApolloSubscribeToMore :document="require('../graphql/SubTaskDeleted.gql')"
-                               :update-query="onSubTaskDeletedTest"/>
+                               :update-query="onSubTaskDeleted"/>
         <template v-slot="{ result: { loading, error, data } }">
             <!--Loading-->
             <div v-if="loading" class="loading apollo">Loading...</div>
@@ -66,7 +66,7 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-btn
                                                         :disabled="isLoading"
-                                                        @click="onSubmit(mutate)"
+                                                        @click="onSubmit(mutate, 'SubTask deleted successfully!')"
                                                         v-bind="attrs"
                                                         v-on="on"
                                                         icon
@@ -96,7 +96,7 @@
                                                     @done="newSubTask = ''"
                                     >
                                         <template v-slot="{ mutate }">
-                                                <v-icon @click="mutate()" :disabled="!inputValid" :color="disabledColor">mdi-plus</v-icon>
+                                                <v-icon @click="onSubmit(mutate, 'SubTask added successfully!')" :disabled="!inputValid" :color="disabledColor">mdi-plus</v-icon>
                                         </template>
                                     </ApolloMutation>
                                 </template>
@@ -114,6 +114,7 @@
 <script>
 // import gql from 'graphql-tag'
 // import { useMutation } from '@vue/apollo-composable'
+import { mapActions } from "vuex";
 
 import UpdateSubTaskDialog from "@/components/UpdateSubTaskDialog.vue";
 import ConfirmAlert from "@/components/ConfirmAlert.vue";
@@ -131,30 +132,22 @@ export default {
         }
     },
     methods: {
-        async onSubmit(mutate){
+        ...mapActions('alert', {
+            hideAlert: "hideAlert",
+            showAlert: "showAlert"
+        }),
+        async onSubmit(mutate, alertMessage){
+            await this.hideAlert();
             const ok = await this.$refs.confirmDeletingSubTaskAlert.show({
                 message: "Are you sure?"
             });
             if(ok){
                 mutate();
+                await this.showAlert({message: alertMessage});
             }
-        },
-        onSubTaskDeleted(store, {data: {deleteSubTask}}) {
-            const query = {
-                query: require("../graphql/SubTasks.gql"),
-                variables: {
-                    taskID: this.taskId
-                },
-            }
-            let data = store.readQuery(query);
-            data.subTasks = data.subTasks.filter((subTask) => subTask.id !== deleteSubTask.id);
-            store.writeQuery({
-                ...query,
-                data,
-            })
         },
         filteredData(data){
-            if(this.filterValue === 'All'){
+            if(!this.filterValue || this.filterValue === 'All'){
                 return data;
             } else if (this.filterValue === 'Complete'){
                 return data.filter((task) => task.completed === true);
@@ -174,7 +167,7 @@ export default {
                 subTasks: [...previousResult.subTasks, subscriptionData.data.subTaskAdded],
             }
         },
-        onSubTaskDeletedTest(previousResult, {subscriptionData}){
+        onSubTaskDeleted(previousResult, {subscriptionData}){
             previousResult.subTasks = previousResult.subTasks.filter((subTask) => subTask.id !== subscriptionData.data.subTaskDeleted.id);
             return {
                 subTasks: [...previousResult.subTasks],

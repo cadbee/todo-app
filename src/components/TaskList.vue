@@ -96,18 +96,6 @@
         >
         </ConfirmAlert>
         <UpdateTaskDialog ref="updateDialogue"></UpdateTaskDialog>
-        <v-snackbar color="green" v-model="alert" :timeout="100000" min-width="100px" top right>
-            <v-icon class="mr-2">mdi-check</v-icon>
-            {{ alertMessage }}
-            <template v-slot:action>
-                <v-btn icon>
-                    <v-icon>mdi-arrow-u-left-top</v-icon>
-                </v-btn>
-                <v-btn icon @click="alert = false">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </template>
-        </v-snackbar>
     </ApolloQuery>
 </template>
 
@@ -116,36 +104,34 @@ import SubTaskList from "@/components/SubTaskList.vue";
 import ConfirmAlert from "@/components/ConfirmAlert.vue";
 import UpdateTaskDialog from "@/components/UpdateTaskDialog.vue";
 
+import {mapActions} from 'vuex';
+
 export default {
     name: "TaskList",
-    props: ['filter'],
+    props: {
+        filter: String
+    },
     data() {
         return {
-            alert: false,
-            alertMessage: '',
             editDialog: true,
             selectedItems: [],
             prevQuery: null,
             prevData: null
         }
     },
-    watch: {
-        alert(new_val){
-            if(new_val){
-                setTimeout(()=>{this.alert=false},10000)
-            }
-        }
-    },
     methods:{
+        ...mapActions('alert', {
+            hideAlert: "hideAlert",
+            showAlert: "showAlert"
+        }),
         async onSubmit(mutate){
-            this.alert = false;
+            this.hideAlert();
             const ok = await this.$refs.confirmMainTaskAddDialogue.show({
                 message: "Are you sure?"
             });
             if(ok){
                 mutate();
-                this.alert = true;
-                this.alertMessage = 'Task deleted successfully!';
+                this.showAlert({message: 'Task deleted successfully!'});
             }
         },
         onTaskDelete(store, {data: {deleteMainTask}}){
