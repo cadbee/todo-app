@@ -7,7 +7,7 @@
         <AppDrawer :is-toggled.sync="drawerToggled"></AppDrawer>
 
         <v-main>
-            <v-container >
+            <v-container class="fill-height" fluid>
                 <router-view></router-view>
             </v-container>
         </v-main>

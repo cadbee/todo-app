@@ -112,13 +112,10 @@
 </template>
 
 <script>
-// import gql from 'graphql-tag'
-// import { useMutation } from '@vue/apollo-composable'
-import { mapActions } from "vuex";
-
 import UpdateSubTaskDialog from "@/components/UpdateSubTaskDialog.vue";
 import ConfirmAlert from "@/components/ConfirmAlert.vue";
 
+import { mapActions } from "vuex";
 export default {
     name: "SubTask",
     components: {ConfirmAlert, UpdateSubTaskDialog},

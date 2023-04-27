@@ -62,7 +62,7 @@
                                                       dark
                                                       small
                                                       color="red"
-                                                      @click.native.stop="onSubmit(mutate)"
+                                                      @click.native.stop="onSubmit(mutate, 'Task deleted successfully!')"
                                                     >
                                                         <v-icon>mdi-delete</v-icon>
                                                     </v-btn>
@@ -90,7 +90,6 @@
                   type="card"
                 ></v-skeleton-loader>
             </v-sheet>
-<!--                <div v-else class="no-result apollo">No result :(</div>-->
         </template>
         <ConfirmAlert ref="confirmMainTaskAddDialogue"
         >
@@ -124,29 +123,15 @@ export default {
             hideAlert: "hideAlert",
             showAlert: "showAlert"
         }),
-        async onSubmit(mutate){
-            this.hideAlert();
+        async onSubmit(mutate, alertMessage){
+            await this.hideAlert();
             const ok = await this.$refs.confirmMainTaskAddDialogue.show({
                 message: "Are you sure?"
             });
             if(ok){
                 mutate();
-                this.showAlert({message: 'Task deleted successfully!'});
+                await this.showAlert({message: alertMessage});
             }
-        },
-        onTaskDelete(store, {data: {deleteMainTask}}){
-            const query = {
-                query: require("../graphql/MainTasks.gql"),
-            }
-            let data = store.readQuery(query);
-            this.prevData = data;
-            this.prevQuery = query;
-            data.mainTasks = data.mainTasks.filter((mainTask) => mainTask.id !== deleteMainTask.id);
-            store.writeQuery({
-                ...query,
-                data,
-            });
-            this.newTask = '';
         },
         openUpdateDialog(task){
             this.$refs.updateDialogue.openDialog({
@@ -165,9 +150,6 @@ export default {
                 mainTasks: [...previousResult.mainTasks],
             }
         },
-        undo(){
-
-        }
     },
     components: {UpdateTaskDialog, ConfirmAlert, SubTaskList}
 }

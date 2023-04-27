@@ -1,15 +1,15 @@
 <template>
     <div class="about">
-        <TaskList/>
+        <hello-world></hello-world>
     </div>
 </template>
 
 <script>
-import TaskList from "@/components/TaskList.vue";
+import HelloWorld from "@/components/HelloWorld.vue";
 
 export default {
     name: 'AboutView',
-    components: {TaskList},
+    components: {HelloWorld},
 }
 </script>
 
