@@ -3,9 +3,15 @@
         <v-icon class="mr-2">mdi-check</v-icon>
         {{ message }}
         <template v-slot:action>
-            <v-btn icon>
-                <v-icon>mdi-arrow-u-left-top</v-icon>
-            </v-btn>
+            <ApolloMutation :mutation="require('../graphql/UndoLastChange.gql')">
+                <template v-slot="{ mutate, isLoading }">
+                    <v-btn :disabled="isLoading"
+                           @click="onUndo(mutate)"
+                           icon>
+                        <v-icon>mdi-arrow-u-left-top</v-icon>
+                    </v-btn>
+                </template>
+            </ApolloMutation>
             <v-btn icon @click="hideAlert()">
                 <v-icon>mdi-close</v-icon>
             </v-btn>
@@ -21,7 +27,11 @@ export default {
         ...mapGetters('alert', {message: 'alertMessage', visible: 'isVisible', timeout: 'timeoutValue'})
     },
     methods: {
-        ...mapActions('alert', ['hideAlert'])
+        ...mapActions('alert', {hideAlert: 'hideAlert'}),
+        onUndo(mutate){
+            mutate();
+            this.hideAlert();
+        }
     }
 }
 </script>
