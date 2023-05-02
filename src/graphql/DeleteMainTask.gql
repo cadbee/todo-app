@@ -1,0 +1,7 @@
+#import './MainTaskFragment.gql'
+
+mutation deleteMainTask($id: ID!){
+    deleteMainTask(id: $id){
+        ...MainTask
+    }
+}

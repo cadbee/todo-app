@@ -1,32 +1,46 @@
 <template>
-  <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
-  </div>
+    <v-app>
+        <v-app-bar app clipped-left color="white" >
+            <v-app-bar-nav-icon @click="onDrawerToggle"></v-app-bar-nav-icon>
+            <v-app-bar-title>TODO App</v-app-bar-title>
+        </v-app-bar>
+        <AppDrawer :is-toggled.sync="drawerToggled"></AppDrawer>
+
+        <v-main>
+            <v-container class="fill-height" fluid>
+                <router-view></router-view>
+            </v-container>
+        </v-main>
+    </v-app>
 </template>
 
+<script>
+
+import AppDrawer from "@/components/AppDrawer.vue";
+
+export default {
+    name: 'App',
+    components: {AppDrawer},
+    data: () => ({
+        drawerToggled: true,
+    }),
+    methods: {
+        onDrawerToggle(){
+            this.drawerToggled = !this.drawerToggled;
+        }
+    }
+};
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+/*Disable Scroll Bar in full-page desktop app*/
+html {
+    overflow-y: auto;
 }
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+.v-alert {
+    position: fixed !important;
+    right: 10px;
+    top: 4px;
+    z-index: 999;
 }
 </style>

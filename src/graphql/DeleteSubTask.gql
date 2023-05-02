@@ -1,0 +1,7 @@
+#import './SubTaskFragment.gql'
+
+mutation deleteSubTask($id: ID!){
+    deleteSubTask(id: $id){
+        ...SubTask
+    }
+}

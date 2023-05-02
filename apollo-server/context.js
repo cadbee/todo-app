@@ -1,5 +1,4 @@
-import { db } from './utils/db'
-import { processUpload } from './utils/upload'
+import {backup, db} from './utils/db'
 
 
 // Context passed to all resolvers (third argument)
@@ -9,7 +8,6 @@ import { processUpload } from './utils/upload'
 export default ({ req, connection }) => {
   return {
     db,
-    processUpload,
-
+    backup,
   }
 }

@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+import alert from './modules/alert.js';
+
 export default new Vuex.Store({
   state: {
   },
@@ -13,5 +15,7 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-  }
+    alert
+  },
+  strict: process.env.NODE_ENV !== 'production'
 })

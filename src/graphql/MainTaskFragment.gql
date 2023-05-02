@@ -1,0 +1,4 @@
+fragment MainTask on MainTask {
+    id
+    name
+}

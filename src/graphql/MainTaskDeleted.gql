@@ -1,0 +1,7 @@
+#import './MainTaskFragment.gql'
+
+subscription mainTaskDeleted{
+    mainTaskDeleted {
+        ...MainTask
+    }
+}
