@@ -1,4 +1,4 @@
-import { db } from './utils/db'
+import {backup, db} from './utils/db'
 
 
 // Context passed to all resolvers (third argument)
@@ -8,5 +8,6 @@ import { db } from './utils/db'
 export default ({ req, connection }) => {
   return {
     db,
+    backup,
   }
 }
