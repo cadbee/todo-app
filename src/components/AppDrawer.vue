@@ -6,8 +6,7 @@
                          :model-value="true"
                          :value="isToggled"
                           @input="onToggle">
-        <v-list
-                nav>
+        <v-list nav>
             <v-list-item
                     to="/"
                     link>
@@ -62,11 +61,6 @@
 export default {
     name: "AppDrawer",
     props: ['isToggled'],
-    data(){
-        return {
-            //
-        }
-    },
     methods:{
       onToggle(value){
           this.$emit('update:isToggled', value);

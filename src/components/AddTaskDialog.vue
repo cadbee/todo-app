@@ -9,7 +9,6 @@
             <v-card-title class="text-h5">
                 Enter task name
             </v-card-title>
-<!--            <v-card-text>Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.</v-card-text>-->
             <v-card-text>
                 <v-text-field
                   label="Task description"
@@ -41,7 +40,6 @@
                             Submit
                         </v-btn>
                     </template>
-
                 </ApolloMutation>
             </v-card-actions>
         </v-card>
@@ -78,7 +76,7 @@ export default {
         async onSubmit(mutate){
             await this.hideAlert();
             const ok = await this.$refs.confirmDialogue.show({
-                message: "Confirm Adding?"
+                message: "Confirm adding?"
             });
             if(ok){
                 mutate();
