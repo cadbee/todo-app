@@ -56,15 +56,39 @@ db.defaults({
         sub_tasks: [
             {
                 id: "-OfaFlQ4t",
-                text: "Nate",
+                text: "Buy flowers for Nate",
+                taskID: "tMI7-Xio9",
+                completed: true
+            },
+            {
+                id: "5JiMEgkKM",
+                text: "Call your parents",
                 taskID: "tMI7-Xio9",
                 completed: false
             },
             {
-                id: "5JiMEgkKM",
-                text: "Mom",
+                id: "0A3GdqdWb",
+                text: "Buy a beer for a neighbor",
                 taskID: "tMI7-Xio9",
                 completed: false
+            },
+            {
+                id: "LO6CGxwth",
+                text: "Joker",
+                taskID: "KNl8GvI0Y",
+                completed: false
+            },
+            {
+                id: "iNw-czpgM",
+                text: "Hobbit",
+                taskID: "KNl8GvI0Y",
+                completed: false
+            },
+            {
+                id: "0k96donEm",
+                text: "Home alone",
+                taskID: "KNl8GvI0Y",
+                completed: true
             },
             {
                 id: "AMVJ8AiD2",
@@ -82,7 +106,7 @@ db.defaults({
                 id: "DYWMM4leo",
                 text: "Avengers",
                 taskID: "KNl8GvI0Y",
-                completed: false
+                completed: true
             },
             {
                 id: "bmLB2VHvB",
