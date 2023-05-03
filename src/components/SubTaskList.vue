@@ -1,6 +1,7 @@
 <template>
     <ApolloQuery :query="require('../graphql/SubTasks.gql')"
                  :variables="{taskID: taskId}"
+                 :prefetch="true"
     >
         <ApolloSubscribeToMore :document="require('../graphql/SubTaskAdded.gql')"
                                :update-query="onSubTaskAdded"/>
@@ -15,10 +16,16 @@
             <div v-else-if="data">
                 <v-list class="pa-0"
                         flat
+
                 >
                     <v-list-item-group
                             multiple
                     >
+                        <transition-group name="custom-classes-transition"
+                                          enter-active-class="animated fadeIn"
+                                          leave-active-class="animated fadeOut"
+                                          :duration="{enter: 500, leave: 500}"
+                                          appear>
                         <v-list-item
                                 v-for="task in filteredData(data.subTasks)"
                                 :key="task.id"
@@ -80,8 +87,12 @@
                                 </ApolloMutation>
                             </v-list-item-icon>
                         </v-list-item>
+                        </transition-group>
                     </v-list-item-group>
                     <v-divider></v-divider>
+                    <transition name="custom-classes-transition"
+                                enter-active-class="animated fadeIn"
+                                appear>
                     <v-list-item>
                         <v-list-item-content>
                             <v-text-field :color="disabledColor"
@@ -103,6 +114,7 @@
                             </v-text-field>
                         </v-list-item-content>
                     </v-list-item>
+                    </transition>
                 </v-list>
                 <ConfirmAlert ref="confirmDeletingSubTaskAlert"></ConfirmAlert>
                 <UpdateSubTaskDialog ref="updateSubTaskDialogue"></UpdateSubTaskDialog>
@@ -160,9 +172,16 @@ export default {
             })
         },
         onSubTaskAdded(previousResult, {subscriptionData}){
-            return {
-                subTasks: [...previousResult.subTasks, subscriptionData.data.subTaskAdded],
+            if(subscriptionData.data.subTaskAdded.taskID === this.taskId){
+                return {
+                    subTasks: [...previousResult.subTasks, subscriptionData.data.subTaskAdded],
+                }
+            } else {
+                return {
+                    subTasks: [...previousResult.subTasks]
+                }
             }
+
         },
         onSubTaskDeleted(previousResult, {subscriptionData}){
             previousResult.subTasks = previousResult.subTasks.filter((subTask) => subTask.id !== subscriptionData.data.subTaskDeleted.id);

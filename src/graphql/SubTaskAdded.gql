@@ -2,6 +2,7 @@
 
 subscription subTaskAdded {
     subTaskAdded {
+        taskID,
         ...SubTask
     }
 }

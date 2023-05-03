@@ -7,7 +7,6 @@
         <template v-slot="{ result: { loading, error, data } }">
             <!-- Loading -->
             <div v-if="loading" class="loading apollo">Loading...</div>
-
             <!-- Error -->
             <div v-else-if="error" class="error apollo">An error occurred</div>
             <v-card v-else-if="data"

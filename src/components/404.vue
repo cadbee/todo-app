@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container fluid class="fill-height">
         <v-row>
             <v-col class="text-center">
                 <v-img src="../assets/error-404.png" alt="image 404" max-height="400px" contain></v-img>
