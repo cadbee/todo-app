@@ -116,16 +116,16 @@
                     </v-list-item>
                     </transition>
                 </v-list>
-                <ConfirmAlert ref="confirmDeletingSubTaskAlert"></ConfirmAlert>
-                <UpdateSubTaskDialog ref="updateSubTaskDialogue"></UpdateSubTaskDialog>
+                <ConfirmAlert ref="confirmDeletingSubTaskAlert"/>
+                <UpdateSubTaskDialog ref="updateSubTaskDialogue"/>
             </div>
         </template>
     </ApolloQuery>
 </template>
 
 <script>
-import UpdateSubTaskDialog from "@/components/UpdateSubTaskDialog.vue";
-import ConfirmAlert from "@/components/ConfirmAlert.vue";
+import UpdateSubTaskDialog from "./UpdateSubTaskDialog.vue";
+import ConfirmAlert from "./ConfirmAlert.vue";
 
 import { mapActions } from "vuex";
 export default {

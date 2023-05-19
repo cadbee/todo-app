@@ -42,14 +42,12 @@
                 </ApolloMutation>
             </v-card-actions>
         </v-card>
-        <ConfirmAlert ref="confirmUpdateDialogue"
-        >
-        </ConfirmAlert>
+        <ConfirmAlert ref="confirmUpdateDialogue"/>
     </v-dialog>
 </template>
 
 <script>
-import ConfirmAlert from "@/components/ConfirmAlert.vue";
+import ConfirmAlert from "./ConfirmAlert.vue";
 
 export default {
     name: "UpdateTaskDialog",

@@ -16,7 +16,7 @@
 
 <script>
 
-import AppDrawer from "@/components/AppDrawer.vue";
+import AppDrawer from "./components/AppDrawer.vue";
 
 export default {
     name: 'App',

@@ -43,15 +43,13 @@
                 </ApolloMutation>
             </v-card-actions>
         </v-card>
-        <ConfirmAlert ref="confirmDialogue"
-        >
-        </ConfirmAlert>
+        <ConfirmAlert ref="confirmDialogue"/>
     </v-dialog>
     </v-layout>
 </template>
 
 <script>
-import ConfirmAlert from "@/components/ConfirmAlert.vue";
+import ConfirmAlert from "./ConfirmAlert.vue";
 import { mapActions } from "vuex";
 
 export default {

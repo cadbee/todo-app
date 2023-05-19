@@ -3,9 +3,9 @@
         <v-row>
             <v-col class="text-center">
                 <v-img src="../assets/error-404.png" alt="image 404" max-height="400px" contain></v-img>
-                <h2><b>404</b> Страница не найдена</h2>
-                <p>посетите главную страницу <br> возможно вы найдёте её</p>
-                <v-btn color="deep-purple lighten-5" :to="{ name: 'home' }" link>На главную</v-btn>
+                <h2><b>404</b> Page not found</h2>
+                <p>Visit the home page <br> You might find it</p>
+                <v-btn color="deep-purple lighten-5" :to="{ name: 'home' }" link>Home</v-btn>
             </v-col>
         </v-row>
     </v-container>

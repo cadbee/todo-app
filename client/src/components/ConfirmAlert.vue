@@ -3,15 +3,15 @@
               width="350"
     >
         <v-card align="center">
-            <v-icon class="fa-fade"
-                    role="img"
-                    size="200"
-                    color="blue-grey-lighten-1"
+            <v-icon
+                class="fa-fade"
+                role="img"
+                size="200"
+                color="blue-grey-lighten-1"
             >
                 mdi-help-circle-outline
             </v-icon>
-            <v-card-text class="text-h5 pb-0"
-            >
+            <v-card-text class="text-h5 pb-0">
                     {{ message }}
             </v-card-text>
             <v-card-actions class="justify-space-around">

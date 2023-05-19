@@ -90,17 +90,15 @@
                 ></v-skeleton-loader>
             </v-sheet>
         </template>
-        <ConfirmAlert ref="confirmMainTaskAddDialogue"
-        >
-        </ConfirmAlert>
-        <UpdateTaskDialog ref="updateDialogue"></UpdateTaskDialog>
+        <ConfirmAlert ref="confirmMainTaskAddDialogue"/>
+        <UpdateTaskDialog ref="updateDialogue"/>
     </ApolloQuery>
 </template>
 
 <script>
-import SubTaskList from "@/components/SubTaskList.vue";
-import ConfirmAlert from "@/components/ConfirmAlert.vue";
-import UpdateTaskDialog from "@/components/UpdateTaskDialog.vue";
+import SubTaskList from "./SubTaskList.vue";
+import ConfirmAlert from "./ConfirmAlert.vue";
+import UpdateTaskDialog from "./UpdateTaskDialog.vue";
 
 import {mapActions} from 'vuex';
 

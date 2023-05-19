@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import AboutContent from "@/components/AboutContent.vue";
+import AboutContent from "../components/AboutContent.vue";
 
 export default {
     name: 'AboutView',

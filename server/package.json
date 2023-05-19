@@ -1,0 +1,19 @@
+{
+  "scripts": {
+    "apollo": "vue-cli-service apollo:dev --generate-schema",
+    "apollo:schema:generate": "vue-cli-service apollo:schema:generate",
+    "apollo:schema:publish": "vue-cli-service apollo:schema:publish",
+    "apollo:start": "vue-cli-service apollo:start"
+  },
+  "dependencies": {
+    "@vue/cli-service": "^5.0.8",
+    "@vue/cli-shared-utils": "^5.0.8",
+    "graphql-type-json": "^0.2.1",
+    "lowdb": "^1.0.0",
+    "mkdirp": "^0.5.1",
+    "shortid": "^2.2.8"
+  },
+  "devDependencies": {
+    "vue-cli-plugin-apollo": "~0.22.2"
+  }
+}
