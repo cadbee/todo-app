@@ -7,15 +7,6 @@ export default {
         timeout: null,
     },
     getters: {
-        isVisible(state){
-            return state.isVisible;
-        },
-        alertMessage(state){
-            return state.alertMessage;
-        },
-        timeoutValue(state){
-            return state.timeoutValue;
-        }
     },
     mutations: {
         hideAlert(state){

@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 import alert from './modules/alert.js';
+import validators from "./modules/validators.js";
 
 export default new Vuex.Store({
   state: {
@@ -15,7 +16,8 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    alert
+    alert,
+    validators
   },
   strict: process.env.NODE_ENV !== 'production'
 })

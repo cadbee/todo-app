@@ -1,5 +1,5 @@
 <template>
-    <AboutContent></AboutContent>
+    <AboutContent/>
 </template>
 
 <script>
@@ -10,7 +10,3 @@ export default {
     components: {AboutContent},
 }
 </script>
-
-<style scoped>
-
-</style>

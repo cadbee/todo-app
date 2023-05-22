@@ -34,6 +34,11 @@ input UpdateSubTaskInput{
   completed: Boolean!
 }
 
+input UpdateSubTaskTextInput{
+  id: ID!
+  text: String!
+}
+
 
 type Query {
   mainTasks: [MainTask]
@@ -47,6 +52,7 @@ type Mutation {
   deleteSubTask(id: ID!): SubTask!
   updateMainTask(input: UpdateMainTaskInput!): MainTask!
   updateSubTask(input: UpdateSubTaskInput!): SubTask!
+  updateSubTaskText(input: UpdateSubTaskTextInput!): SubTask!
   undoLastChange: Boolean!
 }
 

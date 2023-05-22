@@ -1,7 +1,6 @@
 <template>
-    <v-layout>
     <v-dialog
-        :value="opened"
+        v-model="isDialogShown"
         width="500"
         @click:outside="closeDialog"
         @keydown.esc="closeDialog"
@@ -12,11 +11,12 @@
             </v-card-title>
             <v-card-text>
                 <v-text-field
-                  label="Task description"
-                  :rules="rules"
-                  v-model="newTask"
-                  hide-details="auto"
-                  flat
+                    label="Task description"
+                    :rules="rules"
+                    v-model="taskText"
+                    hide-details="auto"
+                    flat
+                    @change="onInputChange"
                 />
             </v-card-text>
             <v-card-actions>
@@ -30,9 +30,8 @@
                     Cancel
                 </v-btn>
                 <ApolloMutation
-                    :mutation="require('../graphql/AddTask.gql')"
-                    :variables="{input: {name: newTask}}"
-                    @done="newTask = ''"
+                    :mutation="mutation"
+                    :variables="variables"
                 >
                     <template v-slot="{ mutate }">
                         <v-btn
@@ -48,56 +47,65 @@
                 </ApolloMutation>
             </v-card-actions>
         </v-card>
-        <ConfirmAlert ref="confirmDialogue"/>
+        <ConfirmAlert ref="confirmUpdateDialogue"/>
     </v-dialog>
-    </v-layout>
 </template>
 
 <script>
 import ConfirmAlert from "./ConfirmAlert.vue";
-import { mapActions, mapState } from "vuex";
+import { mapState } from "vuex";
 
 export default {
-    name: "AddTaskDialog",
+    name: "UpdateDialog",
     components: {ConfirmAlert},
     props: {
-        opened: {
-            type: Boolean,
+        mutation: {
+            type: Object,
+            required: true,
+        },
+        fieldToUpdate: {
+            type: String,
             required: true
         }
     },
     data(){
         return {
-            newTask: ''
+            taskId: '',
+            isDialogShown: false,
+            taskText: '',
+            variables: { input : { id: undefined } }
         }
     },
-    computed: {
+    computed:{
         ...mapState('validators', {
             rules: state => state.taskInputRules
         }),
         isConfirmButtonDisabled() {
-            return !!this.newTask && this.newTask.length >= 3;
+            return !!this.taskText && this.taskText.length >= 3;
         }
     },
     methods: {
-        ...mapActions('alert', {
-            hideAlert: "hideAlert",
-            showAlert: "showAlert"
-        }),
         async onSubmit(mutate){
-            await this.hideAlert();
-            const isConfirmed = await this.$refs.confirmDialogue.show({
-                message: "Confirm adding?"
+            const isConfirmed = await this.$refs.confirmUpdateDialogue.show({
+                message: "Confirm update?"
             });
             if (isConfirmed){
                 mutate();
-                await this.showAlert({message: 'Task added successfully!'});
-                this.$emit('update:opened', false);
+                this.closeDialog();
             }
         },
         closeDialog(){
-            this.$emit('update:opened', false);
+            this.isDialogShown = false;
         },
+        openDialog(opts){
+            this.taskText = opts.initialValue;
+            this.taskId = opts.taskId;
+            this.variables.input.id = this.taskId;
+            this.isDialogShown = true;
+        },
+        onInputChange(){
+            this.variables.input[this.fieldToUpdate] = this.taskText;
+        }
     }
 }
 </script>

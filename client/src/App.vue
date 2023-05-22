@@ -1,14 +1,27 @@
 <template>
     <v-app>
-        <v-app-bar app clipped-left color="white" >
-            <v-app-bar-nav-icon @click="onDrawerToggle"></v-app-bar-nav-icon>
+        <v-app-bar
+            app
+            clipped-left
+        >
+            <v-app-bar-nav-icon @click="onDrawerToggle"/>
             <v-app-bar-title>TODO App</v-app-bar-title>
+            <v-spacer/>
+            <v-switch
+                v-model="$vuetify.theme.dark"
+                inset
+                prepend-icon="mdi-theme-light-dark"
+                hide-details="true"
+            />
         </v-app-bar>
-        <AppDrawer :is-toggled.sync="drawerToggled"></AppDrawer>
+        <AppDrawer :is-toggled.sync="drawerToggled"/>
 
         <v-main>
-            <v-container class="fill-height align-content-start" fluid>
-                <router-view></router-view>
+            <v-container
+                class="fill-height align-content-start"
+                fluid
+            >
+                <router-view/>
             </v-container>
         </v-main>
     </v-app>
@@ -37,6 +50,7 @@ export default {
 html {
     overflow-y: auto;
 }
+
 .v-alert {
     position: fixed !important;
     right: 10px;

@@ -1,0 +1,8 @@
+#import "./SubTaskFragment.gql"
+
+mutation updateSubTaskText($input: UpdateSubTaskTextInput!){
+    updateSubTaskText(input: $input){
+        taskID
+        ...SubTask
+    }
+}

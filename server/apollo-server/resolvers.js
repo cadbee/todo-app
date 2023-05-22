@@ -79,6 +79,13 @@ export default {
             db.write();
             return subTask;
         },
+        updateSubTaskText: (root, {input}, {db, backup}) => {
+            subscriptionDataForUndo.subscription = '';
+            backup.set('data', db.get('data').value()).write();
+            const subTask = db.get('data').get('sub_tasks').find({id: input.id}).assign({text: input.text}).value();
+            db.write();
+            return subTask;
+        },
         undoLastChange: (root, input, {pubsub, db, backup}) => {
             backup.read();
             if(subscriptionDataForUndo.subscription !== ''){
